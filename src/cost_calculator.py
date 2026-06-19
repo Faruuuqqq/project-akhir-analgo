@@ -1,3 +1,19 @@
+"""
+cost_calculator.py — Modul kalkulasi biaya BBM, server, dan TCO.
+
+Bertanggung jawab untuk:
+  - Menghitung biaya BBM per segmen dengan model konsumsi dinamis berbasis beban
+  - Menghitung biaya komputasi server berdasarkan waktu eksekusi algoritma
+  - Mengagregasi Total Cost of Ownership (TCO = BBM + Server)
+  - Menghitung Break-Even Point harga BBM antara Algoritma A dan B
+
+Formula Kunci:
+  fuel_ratio(W) = r_empty + (W_current / W_total) × (r_full - r_empty)
+  TCO           = Biaya_BBM + Biaya_Server
+  P_breakeven   = (Server_B - Server_A) / (Liter_A - Liter_B)
+"""
+
+
 def calculate_fuel_cost(
     route: list,
     matrix: list,

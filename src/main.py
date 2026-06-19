@@ -32,6 +32,7 @@ from algo_greedy      import greedy_nearest_neighbor
 from algo_backtrack   import backtrack_dfs
 from cost_calculator  import calculate_all_costs, calculate_break_even_price
 from reporter         import (
+    configure           as configure_reporter,
     print_scenario_header,
     print_algo_result,
     print_comparison,
@@ -78,10 +79,24 @@ def parse_args() -> argparse.Namespace:
              "distance_matrix.csv, packages.json, scenarios.json.",
     )
 
+    parser.add_argument(
+        "--no-color",
+        action="store_true",
+        default=False,
+        help="Nonaktifkan warna ANSI pada output terminal (berguna untuk redirect ke file).",
+    )
+
+    parser.add_argument(
+        "--verbose",
+        action="store_true",
+        default=False,
+        help="Tampilkan breakdown biaya BBM per segmen untuk setiap algoritma.",
+    )
+
     return parser.parse_args()
 
 # Core Simulation
-def run_simulation(data: dict, scenario_name: str, scenario_config: dict) -> dict:
+def run_simulation(data: dict, scenario_name: str, scenario_config: dict, verbose: bool = False) -> dict:
     """
     Jalankan satu simulasi untuk satu skenario ekonomi.
 
@@ -122,6 +137,7 @@ def run_simulation(data: dict, scenario_name: str, scenario_config: dict) -> dic
         algo_result=greedy_result,
         cost_result=greedy_cost,
         nodes=nodes,
+        verbose=verbose,
     )
 
     # Algoritma B: DFS Backtracking + Pruning
@@ -141,6 +157,7 @@ def run_simulation(data: dict, scenario_name: str, scenario_config: dict) -> dic
         algo_result=backtrack_result,
         cost_result=backtrack_cost,
         nodes=nodes,
+        verbose=verbose,
     )
     print_comparison(
         scenario_name=scenario_name,
@@ -164,6 +181,9 @@ def run_simulation(data: dict, scenario_name: str, scenario_config: dict) -> dic
 def main():
     """Fungsi utama — orkestrasi keseluruhan pipeline simulasi."""
     args = parse_args()
+
+    # Konfigurasi reporter (warna ANSI on/off)
+    configure_reporter(use_color=not args.no_color)
     data_dir = args.data_dir
     
     if not os.path.isabs(data_dir):
@@ -199,7 +219,7 @@ def main():
 
     all_results = {}
     for sc_name, sc_config in scenarios_to_run:
-        result = run_simulation(data, sc_name, sc_config)
+        result = run_simulation(data, sc_name, sc_config, verbose=args.verbose)
         all_results[sc_name] = result
 
     if args.scenario == "all" and len(all_results) > 1:

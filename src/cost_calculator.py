@@ -84,3 +84,28 @@ def calculate_server_cost(exec_time_ms: float, server_cost_per_ms: float) -> flo
 def calculate_tco(fuel_cost: float, server_cost: float) -> float:
     # Hitung Total Cost of Ownership (TCO).
     return fuel_cost + server_cost
+
+def calculate_break_even_price(
+    greedy_result: dict,
+    backtrack_result: dict,
+    greedy_fuel: dict,
+    backtrack_fuel: dict,
+    server_cost_per_ms: float,
+) -> float:
+    # Ambil komponen dari hasil kalkulasi
+    liter_a = greedy_fuel["total_liters"]
+    liter_b = backtrack_fuel["total_liters"]
+
+    # Server cost dihitung dengan tarif dinamis
+    server_a = greedy_result["exec_time_ms"] * server_cost_per_ms
+    server_b = backtrack_result["exec_time_ms"] * server_cost_per_ms
+
+    delta_liter  = liter_a - liter_b     # Selisih konsumsi BBM (liter)
+    delta_server = server_b - server_a    # Selisih biaya server (Rp)
+
+    # Guard: jika selisih liter = 0 (rute identik), break-even tidak ada
+    if abs(delta_liter) < 1e-9:
+        return float("inf")
+
+    p_breakeven = delta_server / delta_liter
+    return p_breakeven

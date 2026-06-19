@@ -121,4 +121,124 @@ def calculate_fuel_cost(
         "fuel_cost":       fuel_cost,
         "segment_details": segment_details,
         "w_total":         w_total,
-}
+    }
+
+
+def calculate_server_cost(exec_time_ms: float, server_cost_per_ms: float) -> float:
+    """
+    Hitung biaya komputasi server berdasarkan waktu eksekusi algoritma.
+
+    Model: Pay-as-you-go — tagihan berdasarkan durasi komputasi aktual.
+
+    Args:
+        exec_time_ms     (float): Waktu eksekusi algoritma (milidetik).
+        server_cost_per_ms (float): Tarif cloud server per ms (Rp/ms).
+
+    Returns:
+        float: Biaya server (Rp).
+    """
+    return exec_time_ms * server_cost_per_ms
+
+
+def calculate_tco(fuel_cost: float, server_cost: float) -> float:
+    """
+    Hitung Total Cost of Ownership (TCO).
+
+    Formula:
+        TCO = Biaya_BBM + Biaya_Server
+
+    Args:
+        fuel_cost   (float): Total biaya BBM (Rp).
+        server_cost (float): Total biaya server (Rp).
+
+    Returns:
+        float: TCO (Rp).
+    """
+    return fuel_cost + server_cost
+
+
+def calculate_break_even_price(
+    greedy_result: dict,
+    backtrack_result: dict,
+    greedy_fuel: dict,
+    backtrack_fuel: dict,
+    server_cost_per_ms: float,
+) -> float:
+    """
+    Hitung Break-Even Point: harga BBM di mana TCO_Greedy = TCO_Backtracking.
+
+    Derivasi Formula:
+        TCO_A(P) = Liter_A × P + Server_A
+        TCO_B(P) = Liter_B × P + Server_B
+
+        TCO_A = TCO_B:
+        Liter_A × P + Server_A = Liter_B × P + Server_B
+        (Liter_A - Liter_B) × P = Server_B - Server_A
+        P_breakeven = (Server_B - Server_A) / (Liter_A - Liter_B)
+
+    Catatan: Liter_A > Liter_B karena greedy memilih rute lebih panjang.
+
+    Args:
+        greedy_result    (dict): Hasil algo_greedy (dengan exec_time_ms).
+        backtrack_result (dict): Hasil algo_backtrack (dengan exec_time_ms).
+        greedy_fuel      (dict): Hasil calculate_fuel_cost untuk greedy.
+        backtrack_fuel   (dict): Hasil calculate_fuel_cost untuk backtrack.
+        server_cost_per_ms (float): Tarif cloud server per ms (Rp/ms).
+
+    Returns:
+        float: Harga BBM break-even (Rp/liter).
+               Jika liter_A == liter_B (rute sama), return float('inf') — tidak ada break-even.
+    """
+    # Ambil komponen dari hasil kalkulasi
+    liter_a = greedy_fuel["total_liters"]
+    liter_b = backtrack_fuel["total_liters"]
+
+    # Server cost dihitung dengan tarif dinamis
+    server_a = greedy_result["exec_time_ms"] * server_cost_per_ms
+    server_b = backtrack_result["exec_time_ms"] * server_cost_per_ms
+
+    delta_liter  = liter_a - liter_b     # Selisih konsumsi BBM (liter)
+    delta_server = server_b - server_a    # Selisih biaya server (Rp)
+
+    # Guard: jika selisih liter = 0 (rute identik), break-even tidak ada
+    if abs(delta_liter) < 1e-9:
+        return float("inf")
+
+    p_breakeven = delta_server / delta_liter
+    return p_breakeven
+
+
+def calculate_all_costs(
+    algo_result: dict,
+    route: list,
+    matrix: list,
+    packages: dict,
+    scenario_config: dict,
+    fuel_model: dict,
+) -> dict:
+    """
+    Helper: Hitung semua biaya (BBM, server, TCO) sekaligus untuk satu hasil algo.
+
+    Args:
+        algo_result    (dict): Output dari algo_greedy atau algo_backtrack.
+        route          (list): Rute (bisa diambil dari algo_result['route']).
+        matrix         (list): Adjacency matrix.
+        packages       (dict): Data berat paket.
+        scenario_config (dict): {'fuel_price_per_liter': ..., 'server_cost_per_ms': ...}.
+        fuel_model     (dict): {'consumption_full_liter_per_km': ..., ...}.
+
+    Returns:
+        dict dengan keys: 'fuel', 'server_cost', 'tco'
+    """
+    fuel_price   = float(scenario_config["fuel_price_per_liter"])
+    server_rate  = float(scenario_config["server_cost_per_ms"])
+
+    fuel_data    = calculate_fuel_cost(route, matrix, packages, fuel_model, fuel_price)
+    server_cost  = calculate_server_cost(algo_result["exec_time_ms"], server_rate)
+    tco          = calculate_tco(fuel_data["fuel_cost"], server_cost)
+
+    return {
+        "fuel":        fuel_data,
+        "server_cost": server_cost,
+        "tco":         tco,
+    }

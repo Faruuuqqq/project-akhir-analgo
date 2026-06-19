@@ -109,3 +109,25 @@ def calculate_break_even_price(
 
     p_breakeven = delta_server / delta_liter
     return p_breakeven
+
+def calculate_all_costs(
+    algo_result: dict,
+    route: list,
+    matrix: list,
+    packages: dict,
+    scenario_config: dict,
+    fuel_model: dict,
+) -> dict:
+    # Hitung semua biaya (BBM, server, TCO) sekaligus untuk satu hasil algo.
+    fuel_price   = float(scenario_config["fuel_price_per_liter"])
+    server_rate  = float(scenario_config["server_cost_per_ms"])
+
+    fuel_data    = calculate_fuel_cost(route, matrix, packages, fuel_model, fuel_price)
+    server_cost  = calculate_server_cost(algo_result["exec_time_ms"], server_rate)
+    tco          = calculate_tco(fuel_data["fuel_cost"], server_cost)
+
+    return {
+        "fuel":        fuel_data,
+        "server_cost": server_cost,
+        "tco":         tco,
+    }

@@ -1,0 +1,15 @@
+{
+  "nodes": [
+    { "id": 0,  "name": "Hub Gudang Pusat - Kiaracondong", "is_hub": true  },
+    { "id": 1,  "name": "Pelanggan A - Dago",               "is_hub": false },
+    { "id": 2,  "name": "Pelanggan B - Antapani",           "is_hub": false },
+    { "id": 3,  "name": "Pelanggan C - Cicadas",            "is_hub": false },
+    { "id": 4,  "name": "Pelanggan D - Buah Batu",          "is_hub": false },
+    { "id": 5,  "name": "Pelanggan E - Margahayu",          "is_hub": false },
+    { "id": 6,  "name": "Pelanggan F - Coblong",            "is_hub": false },
+    { "id": 7,  "name": "Pelanggan G - Sukajadi",           "is_hub": false },
+    { "id": 8,  "name": "Pelanggan H - Setiabudhi",         "is_hub": false },
+    { "id": 9,  "name": "Pelanggan I - Ujungberung",        "is_hub": false },
+    { "id": 10, "name": "Pelanggan J - Gedebage",           "is_hub": false }
+  ]
+}

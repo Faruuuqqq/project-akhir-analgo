@@ -9,3 +9,8 @@
 3. **Ibnaty Farah Rabbany** (140810240022) 
 4. **Achmad Faruq Mahdison** (140810240080)
 
+---
+
+## Lisensi
+
+Dibuat untuk keperluan akademis — ANALGO-UAS-2026.

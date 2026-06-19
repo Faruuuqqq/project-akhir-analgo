@@ -1,17 +1,17 @@
 """
 graph.py — Adjacency Matrix builder dari raw data.
 
-Bertanggung jawab untuk:
+Fungsi:
   - Menerima raw list 2D dari data_loader dan membungkusnya sebagai objek Graph
   - Menyediakan helper: get_distance, get_neighbors, validate
-  - SEMUA representasi menggunakan list 2D primitif murni (tanpa library eksternal)
+  - semua representasi menggunakan list 2D primitif murni (tanpa library eksternal)
 """
 
 
 class Graph:
     """
     Representasi Graf Lengkap Tak Berarah (Undirected Complete Graph)
-    menggunakan Adjacency Matrix (list 2D primitif murni).
+    menggunakan Adjacency Matrix.
 
     Properti yang dijamin:
         - Simetris   : matrix[i][j] == matrix[j][i]

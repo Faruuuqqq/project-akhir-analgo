@@ -1,0 +1,16 @@
+{
+  "scenarios": {
+    "subsidi": {
+      "fuel_price_per_liter": 5000,
+      "server_cost_per_ms":   50
+    },
+    "krisis": {
+      "fuel_price_per_liter": 20000,
+      "server_cost_per_ms":   50
+    }
+  },
+  "fuel_model": {
+    "consumption_full_liter_per_km":  0.05,
+    "consumption_empty_liter_per_km": 0.02
+  }
+}

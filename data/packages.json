@@ -1,0 +1,15 @@
+{
+  "motor_capacity_kg": 30.0,
+  "packages": [
+    { "customer_id": 1,  "weight_kg": 2.5 },
+    { "customer_id": 2,  "weight_kg": 2.0 },
+    { "customer_id": 3,  "weight_kg": 3.2 },
+    { "customer_id": 4,  "weight_kg": 1.5 },
+    { "customer_id": 5,  "weight_kg": 3.5 },
+    { "customer_id": 6,  "weight_kg": 1.8 },
+    { "customer_id": 7,  "weight_kg": 3.0 },
+    { "customer_id": 8,  "weight_kg": 1.5 },
+    { "customer_id": 9,  "weight_kg": 4.2 },
+    { "customer_id": 10, "weight_kg": 2.8 }
+  ]
+}

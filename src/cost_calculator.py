@@ -77,3 +77,10 @@ def calculate_fuel_cost(
         "w_total":         w_total,
     }
 
+def calculate_server_cost(exec_time_ms: float, server_cost_per_ms: float) -> float:
+    # Hitung biaya komputasi server berdasarkan waktu eksekusi algoritma.
+    return exec_time_ms * server_cost_per_ms
+
+def calculate_tco(fuel_cost: float, server_cost: float) -> float:
+    # Hitung Total Cost of Ownership (TCO).
+    return fuel_cost + server_cost
